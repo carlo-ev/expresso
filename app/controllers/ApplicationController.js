@@ -9,13 +9,13 @@ var methodColorsOptions = Object.keys(methodColors);
 
 module.exports.init = function(){
 
-	var ControllersDirectory = fs.readdirSync('./');
+	var ControllersDirectory = fs.readdirSync('./app/controllers');
 
 	app.use(function(req, res, next){
-		var requestName = "New " + req.method + ' request to ' + req.route;
-		var requestColor = methodColors.indexOf(req.method) > -1 ? methodColors[req.method] : 'cyan';
+		var requestName = "New " + req.method + ' request to ' + req.path;
+		var requestColor = methodColorsOptions.indexOf(req.method) > -1 ? methodColors[req.method] : 'cyan';
 		console.time(requestName[ requestColor ]);
-		res.on('end', function(){
+		res.on('finish', function(){
 			console.timeEnd(requestName[ requestColor ]);
 		});
 

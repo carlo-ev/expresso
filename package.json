@@ -1,0 +1,13 @@
+{
+	"name": "project_name",
+	"description": "project description",
+	"version": "0.0.1",
+	"author": "me",
+	"dependencies": {
+		"colors" : "~1.0.3",
+		"mongoose": "^4.0.6",
+		"body-parser": "^1.13.1",
+		"compression": "^1.5.1",
+		"express": "^4.11.2"
+	}
+}

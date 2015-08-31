@@ -1,13 +1,19 @@
-var ENV = "production";
-
-if ( process.argv.indexOf('-dev') > -1 )
-	ENV = "development";
-
+var config = require('./config/config.json');
+var envOptions = Object.keys(config);
+var ENV = "development";
+for(var i=0; i<envOptions.length;i++){
+	if (process.argv.indexOf('-'+envOptions[i]) > -1 ){
+		ENV = envOptions[i];
+		break;
+	}
+}
+config = config[ENV];
 
 var port;
 if ( process.argv.indexOf('-p') > -1 )
 	port = parseInt( process.argv[process.argv.indexOf('-p')+1] );
-
+else
+	port = config.server.port;
 
 colors = require('colors');
 mongoose = require('mongoose');
@@ -18,16 +24,12 @@ express = require('express');
 app = express();
 
 
-var config = require('./config.json')[ ENV ];
-app.config = config;
+if (config.server.serveStatic)
+	app.use( express.static( __dirname + config.server.serveStatic ) );
 
-if (!port)
-	port = config.server.port;
-
-
-app.use( express.static( __dirname + config.server.publicFolder ) );
 app.use(compress()); 
 app.use(bodyParser.json());
+app.config = config;
 
 var models = require('./app/models/models.js')
 ,	controller = require('./app/controllers/ApplicationController.js')
@@ -43,7 +45,8 @@ modelsInit(function(){
 	controllerInit();
 	routerInit();
 	setRoutes();
+
+	app.listen( port );
+	console.log( ('Listening on Port '+ port).green );
 });
 
-app.listen( port );
-console.log( ('Listening on Port '+ port).green );

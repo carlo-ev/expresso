@@ -1,0 +1,24 @@
+{
+	"development": {
+		"server": {
+			"port": 8080,
+			"indexFile": "./index_dev.html",
+			"serveStatic": "/public-dev"
+		},
+		"database": {
+			"host": "",
+			"port": 27017,
+			"database": "",
+			"username": "",
+			"password": "" 
+		}
+	},
+	"production":{
+		"server": {
+			"port": 80,
+			"indexFile": "./index.html",
+			"serveStatic": "/public"
+		},
+		"database": {}
+	}
+}

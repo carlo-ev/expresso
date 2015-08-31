@@ -1,6 +1,6 @@
 module.exports.init = function(next){
 
-	var schema = require('./app/models/schema.js').schema;
+	var schema = require('./schema.js').schema;
 
 	// Database Connection Uri
 	var uri = "mongodb://" + app.config.database.host + ":" + app.config.database.port + "/" + app.config.database.database;
