@@ -3,6 +3,8 @@
 This is my personal project template for single page web applications on Nodejs running with Express and Mongo.
 I've used this for a while to speed start some web project so it's better off here. 
 
+
+
 ## The Setup
 
 This Structure/Template project works for RESTful API web applications in mind since it let's you setup RESTful and Custom endpoint with ease.
@@ -38,6 +40,7 @@ and the application will used a generic controller to handle the request.
 - server/controllers/ApplicationController.js, server/config/router.js & server/models/models.js
 Are files used by the application to setup.
 
+
 ## To Start
 To Start the application after setting up all the required files you just need to:
 ```
@@ -55,9 +58,12 @@ node server.js
 4. Bower
 5. Brunch
 
+
 ### Notice
 
 Let me know if it is broken, create a pull request in that case. :)
+
+
 
 ### License
 
