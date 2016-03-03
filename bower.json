@@ -1,0 +1,9 @@
+{
+  "name": "ProjectName",
+  "version": "0.0.0",
+  "main": "public/app.js",
+  "dependencies": {
+    "jquery": "*"
+  },
+  "overrides": { }
+}

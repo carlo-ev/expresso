@@ -1,49 +1,63 @@
-var ENV = "production";
+//Setup environment
+config = require('./server/config/config.json');
+environmentOptions = Object.keys(config);
+ENV = 'development';
+for(option in environmentOptions){
+	if(process.argv.indexOf('-'+option) > -1){
+		ENV = option;
+		break;
+	}
+}
+config = config[ENV];
 
-if ( process.argv.indexOf('-dev') > -1 )
-	ENV = "development";
-
-
+//Setup server port
 var port;
-if ( process.argv.indexOf('-p') > -1 )
-	port = parseInt( process.argv[process.argv.indexOf('-p')+1] );
-
-
-colors = require('colors');
-mongoose = require('mongoose');
-fs = require('fs');
-bodyParser = require('body-parser');
-compress = require('compression');
-express = require('express');
-app = express();
-
-
-var config = require('./config.json')[ ENV ];
-app.config = config;
-
-if (!port)
+if(config.server.port)
 	port = config.server.port;
+else
+	port = 8080;
+portIndex = process.argv.indexOf('-p');
+if(portIndex > -1)
+	port = parseInt(process.argv[portIndex+1]); 
 
+/*
+ Load mandatory requirements
+*/
 
-app.use( express.static( __dirname + config.server.publicFolder ) );
-app.use(compress()); 
-app.use(bodyParser.json());
+// Common Libraries
+path = require('path');
+fs = require('fs');
+crypto = require('crypto');
 
-var models = require('./app/models/models.js')
-,	controller = require('./app/controllers/ApplicationController.js')
-,	router = require('./config/router.js')
-,	routes = require('./config/routes.js');
+// Third parties
+require('colors');
+var bodyParser = require('body-parser'),
+	compress = require('compression');
+mongoose = require('mongoose');
+express = require('express');
 
-var modelsInit = models.init
-,	routerInit = router.init
-,	controllerInit = controller.init
-,	setRoutes = routes.routes;
+// Specific Import
+var models = require('./server/models/models.js'),
+	controller = require('./server/ApplicationController.js'),
+	router = require('./server/config/router.js'),
+	routes = require('./server/config/routes.js');
 
-modelsInit(function(){
-	controllerInit();
-	routerInit();
-	setRoutes();
-});
+//Setup express app
+App = express();
+Router = {};
+if(config.server.serveStatic)
+	App.use( express.static(__dirname + config.server.serveStatic) )
+App.use( compress() );
+App.use( bodyParser.json() );
 
-app.listen( port );
-console.log( ('Listening on Port '+ port).green );
+//Append user defined config to the application
+App.__CONFIG = config;
+
+models.init( (function(){
+	controller.init();
+	router.init();
+	routes.routes();
+}).bind(this) );
+
+App.listen(port);
+console.log(('Listening on Port '+port).green);
