@@ -5,12 +5,13 @@ module.exports.init = function(callback){
 
 	//Database Connection URI
 	uri = 'mongodb://'+ 
-		App.__CONFIG.database.username + ':' +
-		App.__CONFIG.database.password + '@' +
-		App.__CONFIG.database.host + ':' +
-		App.__CONFIG.database.port + '/' +
-		App.__CONFIG.database.database;
+		App.locals.database.username + ':' +
+		App.locals.database.password + '@' +
+		App.locals.database.host + ':' +
+		App.locals.database.port + '/' +
+		App.locals.database.database;
 
+	console.log('database uri ', uri);
 	modelSchemas = Object.keys(schema);
 	Schema = mongoose.Schema;
 	mongoose.connect( uri, function(){ 

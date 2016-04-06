@@ -14,9 +14,9 @@ It also let's static files be served either by endpoint or on a public folder, j
 
 ## Usage
 
-- server/config/onfig.json
+- server/config/config.json
 
-Every important info used around the application should go here, the object is seperated into environments that you define (even thought it expects development as defuault), and according to the environment dictated on server the resulting config object will be available across the whole application.
+Every important info used around the application should go here, the object is seperated into environments that you define (even thought it expects development as defuault), and according to the environment dictated on server the resulting config object will be available across the whole application through Express Locals (aka. App.locals).
 
 - Server.js
 
@@ -44,7 +44,7 @@ Define all your database schema here, object by object, it accepts all restricti
 All your controllers for resources should be here, everyone of them should start with a capital letter and end with Controller or else the resource would not detect it
 and the application will used a generic controller to handle the request.
 
-- server/controllers/ApplicationController.js, server/config/router.js & server/models/models.js
+- server/controllers/ApplicationController.js, server/config/plugger.js & server/models/models.js
 
 Are files used by the application to setup.
 

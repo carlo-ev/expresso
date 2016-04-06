@@ -1,7 +1,7 @@
 //Setup environment
-config = require('./server/config/config.json');
-environmentOptions = Object.keys(config);
-ENV = 'development';
+var config = require('./server/config/config.json');
+var environmentOptions = Object.keys(config);
+var ENV = 'development';
 for(option in environmentOptions){
 	if(process.argv.indexOf('-'+option) > -1){
 		ENV = option;
@@ -16,7 +16,7 @@ if(config.server.port)
 	port = config.server.port;
 else
 	port = 8080;
-portIndex = process.argv.indexOf('-p');
+var portIndex = process.argv.indexOf('-p');
 if(portIndex > -1)
 	port = parseInt(process.argv[portIndex+1]); 
 
@@ -38,26 +38,48 @@ express = require('express');
 
 // Specific Import
 var models = require('./server/models/models.js'),
-	controller = require('./server/ApplicationController.js'),
-	router = require('./server/config/router.js'),
+	plugger = require('./server/config/plugger.js'),
 	routes = require('./server/config/routes.js');
 
 //Setup express app
 App = express();
-Router = {};
+Router = express.Router()
 if(config.server.serveStatic)
 	App.use( express.static(__dirname + config.server.serveStatic) )
 App.use( compress() );
 App.use( bodyParser.json() );
+App.use( bodyParser.urlencoded({ extended: true }) );
 
 //Append user defined config to the application
-App.__CONFIG = config;
+App.locals = config;
+
+ApplicationController = require('./server/ApplicationController.js');
+
+var methodColors = {
+	'GET': 'cyan',
+	'POST': 'blue',
+	'PUT': 'blue',
+	'DELETE': 'yellow'
+};
+var methodColorsOptions = Object.keys(methodColors);
+
 
 models.init( (function(){
-	controller.init();
-	router.init();
+	plugger.init();
 	routes.routes();
-}).bind(this) );
 
-App.listen(port);
-console.log(('Listening on Port '+port).green);
+	App.use(function(req, res, next){
+		var requestName, requestColor;
+		requestName = 'New '+req.method+' request to '+req.path;
+		requestColor = methodColorsOptions.indexOf(req.method)>-1 ? methodColors[req.method] : 'cyan';
+		console.time(requestName[requestColor]);
+		res.on('finish', function(){
+			console.timeEnd(requestName[requestColor]);
+		});
+		next();
+	});
+
+	App.use(Router)
+	App.listen(port);
+	console.log(('Listening on Port '+port).green);
+}).bind(this) );
